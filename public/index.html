@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cheat Roulette Card Game</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="lobby">
+    <h1>Welcome to Cheat Roulette</h1>
+    <input id="playerName" placeholder="Enter your name">
+    <input id="gameId" placeholder="Game ID (e.g., game123)">
+    <button id="joinGameBtn">Join Game</button>
+    <div id="playerList">
+      <h3>Lobby</h3>
+      <ul id="players"></ul>
+    </div>
+    <button id="startGameBtn" style="display:none;">Start Game</button>
+  </div>
+  
+  
+
+  <div id="game" style="display:none;">
+    <div class="game-header">
+      <h2>Cheat Roulette</h2>
+      <div id="tableInfo">
+        <p>Table Card: <span id="tableCard"></span></p>
+        <p>Current Turn: <span id="currentTurnPlayer"></span></p>
+      </div>
+    
+
+   <div class="deck-selector">
+    <label for="deckStyle">Card Deck:</label>
+    <select id="deckStyle">
+      <option value="default">Default</option>
+      <option value="balatro">Balatro</option>
+    </select>
+    </div>
+    </div>
+    
+    <div class="game-container">
+      <!-- Opponent players section -->
+      <div id="opponentsArea" class="opponents-area"></div>
+      
+      <!-- Central game table -->
+      <div id="gameTable" class="game-table">
+        <div id="playedCardsArea" class="played-cards-area">
+          <p id="lastPlayInfo"></p>
+          <div id="playedCards" class="played-cards"></div>
+        </div>
+        
+        <div id="gameActions" class="game-actions">
+          <div id="playCardsControls">
+            <p>Select cards to play:</p>
+            <input type="number" id="cardCount" min="1" max="5" value="1">
+            <button id="playCardsBtn" disabled>Play Selected Cards</button>
+          </div>
+          <button id="callLiarBtn" disabled>Call Liar</button>
+        </div>
+      </div>
+      
+      <!-- Player's hand -->
+      <div id="playerArea" class="player-area">
+        <h3>Your Hand</h3>
+        <div id="handCards" class="hand-cards"></div>
+      </div>
+    </div>
+    
+    <!-- Game messages and roulette -->
+    <div class="game-footer">
+      <div id="gameMessages" class="game-messages"></div>
+      <div id="rouletteArea" class="roulette-area" style="display:none;">
+        <h3>Roulette</h3>
+        <p id="rouletteInfo">Chamber: <span id="chamber">1</span>/6</p>
+        <button id="pullTriggerBtn">Pull Trigger</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
