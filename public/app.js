@@ -14,10 +14,10 @@ let gameState = {
     // Card image settings
     useCardImages: true, // Set to true to use card images instead of CSS styling
     cardImages: {
-      Ace: '/images/decks/default/ace.svg',  // Replace with your actual image paths
-      King: '/images/decks/default/king.svg',
-      Queen: '/images/decks/default/queen.svg',
-      Joker: '/images/decks/default/joker.svg',
+      Ace: '/images/decks/default/ace.png', // Replace with your actual image path 
+      King: '/images/decks/default/king.png',
+      Queen: '/images/decks/default/queen.png',
+      Joker: '/images/decks/default/joker.png',
       Back: '/images/decks/default/back.png'
     }
     
@@ -105,10 +105,10 @@ document.getElementById('deckStyle').addEventListener('change', function() {
       
       // Update image paths based on selected deck
       gameState.cardImages = {
-        Ace: `/images/${deckStyle}/ace.svg`,
-        King: `/images/${deckStyle}/king.svg`,
-        Queen: `/images/${deckStyle}/queen.svg`,
-        Joker: `/images/${deckStyle}/joker.svg`,
+        Ace: `/images/${deckStyle}/ace.png`,
+        King: `/images/${deckStyle}/king.png`,
+        Queen: `/images/${deckStyle}/queen.png`,
+        Joker: `/images/${deckStyle}/joker.png`,
         Back: `/images/${deckStyle}/card_back.png`
       };
     }
