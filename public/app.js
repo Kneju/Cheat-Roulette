@@ -105,11 +105,11 @@ document.getElementById('deckStyle').addEventListener('change', function() {
       
       // Update image paths based on selected deck
       gameState.cardImages = {
-        Ace: `/images/${deckStyle}/ace.png`,
-        King: `/images/${deckStyle}/king.png`,
-        Queen: `/images/${deckStyle}/queen.png`,
-        Joker: `/images/${deckStyle}/joker.png`,
-        Back: `/images/${deckStyle}/card_back.png`
+        Ace: `/images/decks/${deckStyle}/ace.png`,
+        King: `/images/decks/${deckStyle}/king.png`,
+        Queen: `/images/decks/${deckStyle}/queen.png`,
+        Joker: `/images/decks/${deckStyle}/joker.png`,
+        Back: `/images/decks/${deckStyle}/card_back.png`
       };
     }
     
