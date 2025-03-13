@@ -288,6 +288,53 @@ body {
     overflow-y: auto;
     border-radius: 4px;
     font-family: monospace;
+    margin-right: 10px;
+  }
+  
+  .chat-area {
+    width: 250px;
+    background-color: #333;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    margin-right: 10px;
+  }
+  
+  .chat-messages {
+    height: 120px;
+    overflow-y: auto;
+    background-color: #222;
+    padding: 8px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+  
+  .chat-input-area {
+    display: flex;
+  }
+  
+  .chat-input-area input {
+    flex-grow: 1;
+    margin-right: 5px;
+  }
+  
+  .chat-input-area button {
+    width: 60px;
+  }
+  
+  .chat-message {
+    margin-bottom: 6px;
+    word-wrap: break-word;
+  }
+  
+  .chat-username {
+    font-weight: bold;
+    color: #ffd700;
+  }
+  
+  .my-message .chat-username {
+    color: #ff9900;
   }
   
   .roulette-area {

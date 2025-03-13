@@ -295,6 +295,23 @@ io.on('connection', (socket) => {
     }
   });
 
+
+  // Chat message Handlers
+  // Handle chat messages
+  socket.on('chatMessage', ({ gameId, message, sender }) => {
+    // Broadcast the chat message to all players in the game
+    io.to(gameId).emit('chatMessage', {
+      message: message,
+      sender: sender,
+      senderId: socket.id,
+      timestamp: new Date().toISOString()
+    });
+    
+    console.log(`[${gameId}] Chat: ${sender}: ${message}`);
+  });
+
+
+
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
     

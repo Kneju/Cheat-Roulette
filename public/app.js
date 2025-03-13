@@ -46,7 +46,10 @@ const elements = {
   lastPlayInfo: document.getElementById('lastPlayInfo'),
   gameMessages: document.getElementById('gameMessages'),
   rouletteArea: document.getElementById('rouletteArea'),
-  chamber: document.getElementById('chamber')
+  chamber: document.getElementById('chamber'), 
+  chatInput: document.getElementById('chatInput'),
+  sendChatBtn: document.getElementById('sendChatBtn'),
+  chatMessages: document.getElementById('chatMessages'),
 };
 
 // Join game when button is clicked
@@ -338,6 +341,65 @@ elements.pullTriggerBtn.addEventListener('click', () => {
     // Hide the button instead of disabling it
     elements.pullTriggerBtn.style.display = 'none';
 });
+
+
+// Chat messages 
+
+// Send chat message when button is clicked
+elements.sendChatBtn.addEventListener('click', () => {
+  sendChatMessage();
+});
+
+// Send chat message when Enter key is pressed
+elements.chatInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    sendChatMessage();
+  }
+});
+
+// Function to send chat message
+function sendChatMessage() {
+  const message = elements.chatInput.value.trim();
+  if (message) {
+    socket.emit('chatMessage', {
+      gameId: currentGameId,
+      message: message,
+      sender: currentPlayerName
+    });
+    elements.chatInput.value = '';
+  }
+}
+
+// Socket event to receive chat messages
+socket.on('chatMessage', (data) => {
+  const isMyMessage = data.senderId === socket.id;
+  addChatMessage(data.sender, data.message, isMyMessage);
+});
+
+// Function to add a chat message to the chat box
+function addChatMessage(sender, message, isMyMessage = false) {
+  const messageElem = document.createElement('div');
+  messageElem.className = `chat-message ${isMyMessage ? 'my-message' : ''}`;
+  
+  const usernameSpan = document.createElement('span');
+  usernameSpan.className = 'chat-username';
+  usernameSpan.textContent = sender + ': ';
+  
+  messageElem.appendChild(usernameSpan);
+  messageElem.appendChild(document.createTextNode(message));
+  
+  elements.chatMessages.appendChild(messageElem);
+  
+  // Auto-scroll to bottom
+  elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
+}
+
+
+
+
+
+
+
 
 
 // Helper Functions
