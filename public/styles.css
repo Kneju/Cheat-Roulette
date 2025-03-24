@@ -186,7 +186,7 @@ body {
   /* Player's hand */
   .player-area {
     text-align: center;
-    margin-top: -20px; /* Move the player area higher up */
+    margin-top: -0px; /* Move the player area higher up */
     margin-bottom: 180px; /* Keep space below player area */
   }
   
