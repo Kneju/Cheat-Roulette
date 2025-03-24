@@ -28,6 +28,7 @@ let gameState = {
 // DOM Elements Cache
 const elements = {
   joinBtn: document.getElementById('joinGameBtn'),
+  leaveLobbyBtn: document.getElementById('leaveLobbyBtn'),
   startBtn: document.getElementById('startGameBtn'),
   playCardsBtn: document.getElementById('playCardsBtn'),
   callLiarBtn: document.getElementById('callLiarBtn'),
@@ -64,7 +65,29 @@ elements.joinBtn.addEventListener('click', () => {
   
   myPlayerId = socket.id;
   socket.emit('joinGame', { gameId: currentGameId, playerName: currentPlayerName });
+  
+  // Disable join button and show leave button
+  elements.joinBtn.disabled = true;
+  elements.leaveLobbyBtn.style.display = 'inline-block';
+  elements.playerNameInput.disabled = true;
+  elements.gameIdInput.disabled = true;
 });
+
+
+// Leave lobby button handler
+elements.leaveLobbyBtn.addEventListener('click', () => {
+  socket.emit('leaveLobby', { gameId: currentGameId });
+  
+  // Reset UI
+  elements.joinBtn.disabled = false;
+  elements.leaveLobbyBtn.style.display = 'none';
+  elements.playerNameInput.disabled = false;
+  elements.gameIdInput.disabled = false;
+  elements.playersList.innerHTML = '';
+  currentGameId = null;
+  currentPlayerName = null;
+});
+
 
 // Listen for lobby updates
 socket.on('lobbyUpdate', (data) => {

@@ -61,6 +61,39 @@ io.on('connection', (socket) => {
     console.log(`${playerName} (${socket.id}) joined game ${gameId}`);
   });
 
+
+  // Handle leaving lobby
+socket.on('leaveLobby', ({ gameId }) => {
+  if (!games[gameId]) return;
+  
+  // Remove player from the game
+  const playerIndex = games[gameId].players.findIndex(p => p.id === socket.id);
+  if (playerIndex !== -1) {
+    games[gameId].players.splice(playerIndex, 1);
+    
+    // If no players left, delete the game
+    if (games[gameId].players.length === 0) {
+      delete games[gameId];
+      console.log(`Game ${gameId} deleted - all players left`);
+    } else {
+      // If the host leaves, assign a new host
+      if (games[gameId].hostId === socket.id) {
+        games[gameId].hostId = games[gameId].players[0].id;
+      }
+      
+      // Update the lobby for remaining players
+      io.to(gameId).emit('lobbyUpdate', { 
+        players: games[gameId].players.map(p => ({ id: p.id, name: p.name })), 
+        hostId: games[gameId].hostId 
+      });
+    }
+  }
+  
+  // Leave the Socket.IO room
+  socket.leave(gameId);
+  console.log(`Player ${socket.id} left game ${gameId}`);
+});
+
   // Handle starting a game
   socket.on('startGame', (gameId) => {
     let game = games[gameId];
