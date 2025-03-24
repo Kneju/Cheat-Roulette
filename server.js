@@ -63,37 +63,71 @@ io.on('connection', (socket) => {
 
 
   // Handle leaving lobby
-socket.on('leaveLobby', ({ gameId }) => {
-  if (!games[gameId]) return;
-  
-  // Remove player from the game
-  const playerIndex = games[gameId].players.findIndex(p => p.id === socket.id);
-  if (playerIndex !== -1) {
-    games[gameId].players.splice(playerIndex, 1);
+  socket.on('leaveLobby', ({ gameId }) => {
+    if (!games[gameId]) return;
     
-    // If no players left, delete the game
-    if (games[gameId].players.length === 0) {
-      delete games[gameId];
-      console.log(`Game ${gameId} deleted - all players left`);
-    } else {
-      // If the host leaves, assign a new host
-      if (games[gameId].hostId === socket.id) {
-        games[gameId].hostId = games[gameId].players[0].id;
-      }
+    // Remove player from the game
+    const playerIndex = games[gameId].players.findIndex(p => p.id === socket.id);
+    if (playerIndex !== -1) {
+      games[gameId].players.splice(playerIndex, 1);
       
-      // Update the lobby for remaining players
+      // If no players left, delete the game
+      if (games[gameId].players.length === 0) {
+        delete games[gameId];
+        console.log(`Game ${gameId} deleted - all players left`);
+      } else {
+        // If the host leaves, assign a new host
+        if (games[gameId].hostId === socket.id) {
+          games[gameId].hostId = games[gameId].players[0].id;
+        }
+        
+        // Update the lobby for remaining players
+        io.to(gameId).emit('lobbyUpdate', { 
+          players: games[gameId].players.map(p => ({ id: p.id, name: p.name })), 
+          hostId: games[gameId].hostId 
+        });
+      }
+    }
+    
+    // Leave the Socket.IO room
+    socket.leave(gameId);
+    console.log(`Player ${socket.id} left game ${gameId}`);
+  });
+
+  socket.on('returnToLobby', ({ gameId }) => {
+    if (!games[gameId]) return;
+    
+    // Find the player
+    const playerIndex = games[gameId].players.findIndex(p => p.id === socket.id);
+    if (playerIndex !== -1) {
+      // Reset player's game state
+      games[gameId].players[playerIndex].hand = [];
+      games[gameId].players[playerIndex].rouletteCount = 0;
+      games[gameId].players[playerIndex].alive = true;
+    }
+    
+    // Check if all players have returned to lobby
+    const allReturned = games[gameId].players.every(p => p.hand.length === 0);
+    
+    if (allReturned) {
+      // Reset the game state
+      games[gameId].gameStarted = false;
+      games[gameId].deck = [];
+      games[gameId].currentTurn = null;
+      games[gameId].tableCard = null;
+      games[gameId].lastPlay = null;
+      
+      // Update the lobby for all players
       io.to(gameId).emit('lobbyUpdate', { 
         players: games[gameId].players.map(p => ({ id: p.id, name: p.name })), 
         hostId: games[gameId].hostId 
       });
+      
+      console.log(`Game ${gameId} reset to lobby state`);
     }
-  }
-  
-  // Leave the Socket.IO room
-  socket.leave(gameId);
-  console.log(`Player ${socket.id} left game ${gameId}`);
-});
+  });
 
+  
   // Handle starting a game
   socket.on('startGame', (gameId) => {
     let game = games[gameId];

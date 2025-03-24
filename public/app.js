@@ -51,6 +51,10 @@ const elements = {
   chatInput: document.getElementById('chatInput'),
   sendChatBtn: document.getElementById('sendChatBtn'),
   chatMessages: document.getElementById('chatMessages'),
+  endGameOptions: document.getElementById('endGameOptions'),
+  backToLobbyBtn: document.getElementById('backToLobbyBtn'),
+  backToMainBtn: document.getElementById('backToMainBtn'),
+
 };
 
 // Join game when button is clicked
@@ -292,11 +296,75 @@ socket.on('gameOver', (data) => {
   const winnerName = getPlayerNameById(data.winnerId);
   addGameMessage(`Game over! ${winnerName} is the winner!`);
   
+  // Show end game options
+  elements.endGameOptions.style.display = 'block';
+
   // Disable all game controls
   elements.playCardsBtn.disabled = true;
   elements.callLiarBtn.disabled = true;
   elements.pullTriggerBtn.disabled = true;
 });
+
+elements.backToLobbyBtn.addEventListener('click', () => {
+  // Hide game and show lobby
+  elements.game.style.display = 'none';
+  elements.lobby.style.display = 'block';
+  elements.endGameOptions.style.display = 'none';
+  
+  // Reset UI elements but keep the player in the lobby
+  resetGameUI();
+  
+  // Tell server we want to return to lobby
+  socket.emit('returnToLobby', { gameId: currentGameId });
+});
+
+
+elements.backToMainBtn.addEventListener('click', () => {
+  // Hide game and show lobby
+  elements.game.style.display = 'none';
+  elements.lobby.style.display = 'block';
+  elements.endGameOptions.style.display = 'none';
+  
+  // Reset everything including lobby
+  resetGameUI();
+  elements.joinBtn.disabled = false;
+  elements.leaveLobbyBtn.style.display = 'none';
+  elements.playerNameInput.disabled = false;
+  elements.gameIdInput.disabled = false;
+  elements.playersList.innerHTML = '';
+  
+  // Tell server we're leaving completely
+  socket.emit('leaveLobby', { gameId: currentGameId });
+  currentGameId = null;
+  currentPlayerName = null;
+});
+// Add a helper function to reset the game UI
+
+function resetGameUI() {
+  // Reset all game state
+  gameState.players = [];
+  gameState.tableCard = null;
+  gameState.currentTurn = null;
+  gameState.myHand = [];
+  gameState.lastPlay = null;
+  gameState.canCallLiar = false;
+  gameState.selectedCards = [];
+  
+  // Clear UI elements
+  elements.handCards.innerHTML = '';
+  elements.playedCards.innerHTML = '';
+  elements.opponentsArea.innerHTML = '';
+  elements.lastPlayInfo.textContent = '';
+  elements.currentTurnPlayer.textContent = '';
+  elements.tableCard.textContent = '';
+  elements.gameMessages.innerHTML = '';
+  elements.rouletteArea.style.display = 'none';
+  
+  // If you have a chat, clear that too
+  if (elements.chatMessages) {
+    elements.chatMessages.innerHTML = '';
+  }
+}
 
 // Handler for selecting cards from hand
 function selectCard(cardElem) {
