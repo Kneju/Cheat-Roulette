@@ -234,7 +234,7 @@ socket.on('cardsPlayed', (data) => {
   displayPlayedCards(data.cardCount);
   
   // Update who can call liar - ONLY the next player can call liar
-  gameState.canCallLiar = data.nextPlayerId === socket.id;
+  gameState.canCallLiar = data.nextPlayerId === socket.id && socket.id === gameState.currentTurn;
   elements.callLiarBtn.disabled = !gameState.canCallLiar;
   
   // Update messages
@@ -636,7 +636,7 @@ function updateActionButtons() {
   const isMyTurn = gameState.currentTurn === socket.id;
   
   elements.playCardsBtn.disabled = !isMyTurn || gameState.selectedCards.length === 0;
-  elements.callLiarBtn.disabled = !gameState.canCallLiar;
+  elements.callLiarBtn.disabled = !gameState.canCallLiar || !isMyTurn;
 }
 
 // Remove cards from hand after playing them
